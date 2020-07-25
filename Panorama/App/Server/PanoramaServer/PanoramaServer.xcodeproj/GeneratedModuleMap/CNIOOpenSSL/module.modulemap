@@ -1,0 +1,4 @@
+module CNIOOpenSSL {
+    umbrella "/Users/brazilec22/Documents/FutureTech/Panorama/App/Server/PanoramaServer/.build/checkouts/swift-nio-ssl/Sources/CNIOOpenSSL/include"
+    export *
+}

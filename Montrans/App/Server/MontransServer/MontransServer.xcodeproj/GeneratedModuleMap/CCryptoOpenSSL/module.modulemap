@@ -1,0 +1,4 @@
+module CCryptoOpenSSL {
+    umbrella "/Users/brazilec22/Documents/FutureTech/Montrans/App/Server/MontransServer/.build/checkouts/crypto/Sources/CCryptoOpenSSL/include"
+    export *
+}
