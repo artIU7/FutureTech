@@ -56,12 +56,13 @@ class ViewController: UIViewController {
             let classificationRequest = VNCoreMLRequest(model: visionModel, completionHandler: handleClassifications)
             classificationRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop//VNImageCropAndScaleOptionCenterCrop
             visionRequests = [classificationRequest]
-            self.setupLayers()
-        } catch {
+            } catch {
             let alertController = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
             present(alertController, animated: true, completion: nil)
         }
+        self.setupLayers()
+        self.updateLayerGeometry()
     }
 
     override func viewDidLayoutSubviews() {
@@ -80,13 +81,13 @@ class ViewController: UIViewController {
         }
         //print("Classification results: \(results)")
         var resultString = "-"
+        //self.drawVisionRequestResults(results)
         results[0...3].forEach {
             let identifer = $0.identifier.lowercased()
             let confidence = $0.confidence
 
            // if identifer.range(of: "cat") != nil || identifer.range(of: "cat") != nil || //identifer == "cat" {
-                print("id results: \(identifer) - \(confidence)")
-                self.drawVisionRequestResults(results[0])
+    //out            print("id results: \(identifer) - \(confidence)")
                 resultString = "\(identifer) : \(confidence)"
            // }
         }
@@ -98,13 +99,18 @@ class ViewController: UIViewController {
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
         detectionOverlay.sublayers = nil // remove all the old recognized objects
+      //  print("out for :: \(results)")
         for observation in results where observation is VNRecognizedObjectObservation {
+     //       print("in for :: \(observation)")
             guard let objectObservation = observation as? VNRecognizedObjectObservation else {
                 continue
             }
             // Select only the label with the highest confidence.
             let topLabelObservation = objectObservation.labels[0]
-            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(bufferSize.width), Int(bufferSize.height))
+            let objectBounds = VNImageRectForNormalizedRect(CGRect(x: 0.0,
+                                                                              y: 0.0,
+                       width: bufferSize.width + 1.0,
+                       height: bufferSize.height + 1.0), Int(bufferSize.width), Int(bufferSize.height))
             
             let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
             
